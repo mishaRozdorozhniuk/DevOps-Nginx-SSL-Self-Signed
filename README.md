@@ -1,52 +1,52 @@
 # Nginx with Self-Signed SSL Configuration Guide
 
-## 1. Setting Up Local Development Environment
+The purpose of this project is to set up a local server using Nginx and SSL certificates. I will configure Nginx for two static websites - one on HTTP and the other on HTTPS. I will also set up HTTP Basic Auth for the first site using the apache2-utils package. I will configure a self-signed SSL certificate for the second site using OpenSSL. Additionally, I will set up an HTTP to HTTPS redirect from Site1 to Site2.
 
-### Configuring Local DNS with Hosts File
-
-#### Viewing Current Hosts File
-
-![Current /etc/hosts Contents](./content-of-etc-hosts.png)
-
-Displaying the current contents of the system's hosts file.
-
-#### Adding Local Domains to Hosts File
-
-![Updating /etc/hosts](./add-content-to-etc-hosts.png)
-
-Adding local domain entries to the hosts file for local development.
-
-## 2. Creating Nginx Configuration Files
-
-![Creating Configuration Files](./create-conf-files.png)
-
-Using `nano` to create and edit Nginx configuration files in the sites-available directory.
-
-## 3. Checking Nginx Installation and Status
+## 1. Checking Nginx Installation and Status
 
 ![Nginx Service Status](./active-nginx-process.png)
 
 Verifying Nginx service status with `systemctl status nginx` command. The service is active (running) with master process PID 7140.
 
-## 2. Accessing Nginx Configuration Directory
-
-![Nginx Configuration Files](./cd-to-nginx-catalog.png)
-
-Listing contents of the main Nginx configuration directory at `/etc/nginx/` showing all available configuration files and directories.
-
-## 3. Testing Nginx with curl
+## 2. Testing Nginx with curl
 
 ![Testing Nginx with curl](./check-nginx-with-curl.png)
 
 Using `curl localhost` to test the default Nginx welcome page.
 
-## 4. Viewing Default Page in Browser
+## 3. Viewing Default Page in Browser
 
 ![Nginx Welcome Page in Browser](./check-in-browser.png)
 
 Default Nginx welcome page displayed in a web browser, confirming successful installation.
 
-## 5. Configuring Virtual Hosts
+## 4. Configuring Local DNS with Hosts File
+
+![Updating /etc/hosts](./add-content-to-etc-hosts.png)
+
+Adding local domain entries to the hosts file for local development.
+
+![Current /etc/hosts Contents](./content-of-etc-hosts.png)
+
+Here we'll add local domains for development by modifying the /etc/hosts file so that site1.local and site2.local point to the local host.
+
+## 5. Accessing Nginx Configuration Directory
+
+![Nginx Configuration Files](./cd-to-nginx-catalog.png)
+
+Listing contents of the main Nginx configuration directory at `/etc/nginx/` showing all available configuration files and directories.
+
+## 6. Creating Website Content
+
+![Editing index.html](./create-content-of-indexhtml.png)
+
+Creating and editing the main `index.html` file for the website content.
+
+## 7. Creating Nginx Configuration Files
+
+![Creating Configuration Files](./create-conf-files.png)
+
+Using `nano` to create and edit Nginx configuration files in the sites-available directory. We'll do everything in conf.d as it's the standard location for configurations in Nginx.
 
 ### Site 1 Configuration
 
@@ -56,25 +56,21 @@ Creating the first virtual host configuration file for site1 in the `/etc/nginx/
 
 ### Site 2 Configuration
 
-![Site 2 Virtual Host Configuration](./update-conf-site-2-reverse-proxy.png)
+Creating the second virtual host configuration is similar to the first one, but with the following adjustments:
 
-Configuring the second virtual host (site2) similar to site1 with the following adjustments:
 - Different server name (site2.local)
-- Separate document root directory
 
-## 6. Verifying Nginx Configuration
+## 8. Verifying Nginx Configuration
 
 ![Nginx Configuration Test](./make-sure-conf-ok.png)
 
 Running `nginx -t` to test the Nginx configuration files for correct syntax.
 
-## 7. Creating Website Content
+After verifying the configuration, we need to reload Nginx to apply the changes.
 
-![Editing index.html](./create-content-of-indexhtml.png)
+![Reloading Nginx](./reload-nginx-after-conf.png)
 
-Creating and editing the main `index.html` file for the website content.
-
-## 8. Viewing Website Results
+## 9. Viewing Website Results
 
 ### Site 1 Result
 
@@ -88,7 +84,7 @@ Successfully loaded site1 with the custom content in the web browser.
 
 Successfully loaded site2 with the custom content in the web browser.
 
-## 9. Implementing Basic Authentication
+## 10. Implementing Basic Authentication
 
 ### Installing Apache2 Utilities
 
@@ -108,13 +104,11 @@ Using `htpasswd` command to create a password file for HTTP basic authentication
 
 Modifying the site1 Nginx configuration to enable HTTP basic authentication.
 
-
 ### Testing Authentication in Browser
 
 ![Browser Authentication Prompt](./password-brawser-demo.png)
 
 Browser displaying the authentication dialog when accessing the protected site.
-
 
 ### Verifying Password File
 
@@ -122,8 +116,7 @@ Browser displaying the authentication dialog when accessing the protected site.
 
 Displaying the contents of the created password file with the hashed credentials.
 
-
-## 10. Setting Up SSL with Self-Signed Certificate
+## 11. Setting Up SSL with Self-Signed Certificate
 
 ### Generating SSL Certificate
 
@@ -149,20 +142,18 @@ Modifying site2 configuration to enable HTTPS with the generated SSL certificate
 
 Browser security warning for the self-signed certificate, which is expected behavior.
 
-## 12. Monitoring Nginx Processes
-
-![Nginx Process List](./processes.png)
-
-Viewing all running Nginx processes
-
-## 13. Applying Configuration Changes
-
-![Reloading Nginx](./reload-nginx-after-conf.png)
-
-Using `systemctl reload nginx` to apply configuration changes without downtime.
-
-## 15. Configuring HTTP to HTTPS Redirect
+## 12. Configuring HTTP to HTTPS Redirect
 
 ![HTTP to HTTPS Redirect Setup](./update-conf-site-1-reverse-proxy.png)
 
+![HTTP to HTTPS Redirect Setup](./update-conf-site-2-reverse-proxy.png)
+
 Configuring Nginx to automatically redirect HTTP traffic to HTTPS for secure connections.
+
+Now when accessing http://site1.local, we should be redirected to https://site2.local - everything is working successfully.
+
+## 13. Monitoring Nginx Processes
+
+![Nginx Process List](./processes.png)
+
+Viewing all running Nginx processes to ensure everything is working correctly.
